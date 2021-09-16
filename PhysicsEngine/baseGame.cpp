@@ -1,5 +1,5 @@
 #include "baseGame.h"
-#include <iostream>
+
 
 baseGame::baseGame() 
 {
@@ -16,19 +16,27 @@ void baseGame::init()
 
 void baseGame::tick()
 {
-	std::cout << "game tick" << GetFrameTime() << "\n";
 	accumulatedFixedTime += GetFrameTime();
 	if (accumulatedFixedTime > maxAccumulatedTime)
 	{
 		accumulatedFixedTime = maxAccumulatedTime;
 	}
+	//aa
+	for (int i = 0; i < gameObjects.size(); i++) 
+	{
+		gameObjects[i].interpolate(0.5f);
+	}
+
 	onTick();
 }
 
 void baseGame::tickFixed()
 {
-	std::cout << "physics tick\n";
 	accumulatedFixedTime -= targetFixedStep;
+	for (int i = 0; i < gameObjects.size(); i++) 
+	{
+		gameObjects[i].tickPhys(targetFixedStep);
+	}
 	onFixedTick();
 }
 
@@ -56,4 +64,14 @@ bool baseGame::shouldClose() const
 bool baseGame::shouldTickFixed() const
 {
 	return accumulatedFixedTime >= targetFixedStep;
+}
+
+glm::vec2 baseGame::worldToScreen(glm::vec2 worldPos)
+{
+	return worldPos * 10.f;
+}
+
+glm::vec2 baseGame::screenToWorld(glm::vec2 screenPos)
+{
+	return screenPos * 0.1f;
 }
