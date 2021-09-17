@@ -45,5 +45,12 @@ bool collision::checkAabbCircle(const glm::vec2& posA, const shape& shapeA, cons
 	{
 		return checkAabbCircle(posB, shapeB.aabbData, posA, shapeA.circleData);
 	}
-	
+}
+
+
+
+collision::collision(physObject* o1, physObject* o2) 
+{
+	object1 = o1;
+	object2 = o2;
 }

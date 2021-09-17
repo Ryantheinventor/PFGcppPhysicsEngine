@@ -67,9 +67,21 @@ void physObject::setPos(glm::vec2 newPos)
 	interpolatedPos_ = newPos;
 }
 
-void physObject::collision(physObject other) 
+void physObject::collisionStay(physObject other)
 {
 	//handle collsion
-	OnCollision(other);
+	OnCollisionStay(other);
+}
+
+void physObject::collisionStart(physObject other)
+{
+	//handle collsion
+	OnCollisionStart(other);
+}
+
+void physObject::collisionEnd(physObject other)
+{
+	//handle collsion
+	OnCollisionEnd(other);
 }
 

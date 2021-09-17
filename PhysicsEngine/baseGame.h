@@ -16,7 +16,7 @@ class baseGame
 {
 protected:
     float accumulatedFixedTime;
-    
+    float curGCTime;
    
     // Called internally when game-specifc initialization occurs
     void virtual onInit() { }
@@ -34,7 +34,11 @@ protected:
     void virtual onExit() { }
 
 public:
-    static std::vector<gameObject> gameObjects;
+    static std::vector<collision> lastTickCollisions;
+    static std::vector<gameObject*> gameObjects;
+    static std::vector<gameObject*> destroyedGameObjects;
+    float garbageCollectionTime;
+    
     float targetFixedStep;
     float maxAccumulatedTime;//max of 10 physics tick per main loop
     static float screenSizeMultiplier;

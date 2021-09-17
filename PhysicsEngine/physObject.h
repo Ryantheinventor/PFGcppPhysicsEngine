@@ -32,8 +32,11 @@ public:
 	void addVelocity(glm::vec2 velocity);
 	void interpolate(float alpha);
 	void setPos(glm::vec2 newPos);
-	void collision(physObject other);
-	void virtual OnCollision(physObject other) {};
-	
+	void collisionStay(physObject other);
+	void collisionStart(physObject other);
+	void collisionEnd(physObject other);
+	void virtual OnCollisionStay(physObject other) {};
+	void virtual OnCollisionStart(physObject other) {};
+	void virtual OnCollisionEnd(physObject other) {};
 };
 

@@ -1,14 +1,18 @@
 #include "baseGame.h"
 
 float baseGame::screenSizeMultiplier = 30.f;//the number of pixels a single unit will be represented by
-std::vector<gameObject> baseGame::gameObjects = std::vector<gameObject>();
+std::vector<gameObject*> baseGame::gameObjects = std::vector<gameObject*>();
+std::vector<gameObject*> baseGame::destroyedGameObjects = std::vector<gameObject*>();
+std::vector<collision> baseGame::lastTickCollisions = std::vector<collision>();
+
 baseGame::baseGame() 
 {
 	map[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::checkCircleCircle;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::AABB)] = collision::checkAabbAabb;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::CIRCLE)] = collision::checkAabbCircle;
 
-	
+	//time between garbage collection where destroyed gameObjects get deleted
+	garbageCollectionTime = 10.f;
 
 	//physics timings
 	targetFixedStep = 0.016f;
@@ -27,7 +31,10 @@ void baseGame::init()
 
 void baseGame::tick()
 {
+	std::cout << GetFPS() << "FPS " << baseGame::lastTickCollisions.size() << "Collisions\n";
+	std::cout << baseGame::gameObjects.size() << "Active:" << baseGame::destroyedGameObjects.size() << "Destroyed\n\n";
 	accumulatedFixedTime += GetFrameTime();
+	curGCTime += GetFrameTime();
 	if (accumulatedFixedTime > maxAccumulatedTime)
 	{
 		accumulatedFixedTime = maxAccumulatedTime;
@@ -35,14 +42,36 @@ void baseGame::tick()
 	//aa
 	for (int i = 0; i < baseGame::gameObjects.size(); i++) 
 	{
-		baseGame::gameObjects[i].interpolate(0.5f);
+		(*baseGame::gameObjects[i]).interpolate(0.5f);
 	}
 	//tick game objects
 	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		baseGame::gameObjects[i].Tick();
+		(*baseGame::gameObjects[i]).Tick();
 	}
-
+	if (curGCTime >= garbageCollectionTime) 
+	{
+		std::cout << "GC\n";
+		//do clean up
+		for (int i = baseGame::destroyedGameObjects.size()-1; i >= 0; i--)
+		{
+			gameObject* go = baseGame::destroyedGameObjects[i];
+			bool goodToDelete = true;
+			for (collision c : lastTickCollisions)
+			{
+				if (go == c.object1 || go == c.object2) 
+				{
+					goodToDelete = false;
+				}
+			}
+			if (goodToDelete) 
+			{
+				delete baseGame::destroyedGameObjects[i];
+				baseGame::destroyedGameObjects.erase(baseGame::destroyedGameObjects.begin() + i);
+			}
+		}
+		curGCTime = 0;
+	}
 	onTick();
 }
 
@@ -51,28 +80,77 @@ void baseGame::tickFixed()
 	accumulatedFixedTime -= targetFixedStep;
 	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		baseGame::gameObjects[i].tickPhys(targetFixedStep);
-	}
-
-	for (auto& i : baseGame::gameObjects)
-	{
-		for (auto& j : baseGame::gameObjects)
-		{
-			if (&i != &j && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
-				i.physicsPosition(), i.collider,
-				j.physicsPosition(), j.collider
-				)) 
-			{
-				i.collision(j);
-				j.collision(i);
-			}
-		}
+		(*baseGame::gameObjects[i]).tickPhys(targetFixedStep);
 	}
 	//fixed tick game objects
 	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		baseGame::gameObjects[i].FixedTick();
+		(*baseGame::gameObjects[i]).FixedTick();
 	}
+	//collision detection
+	std::vector<collision> collisions;
+	for (auto iP : baseGame::gameObjects)
+	{
+		for (auto jP : baseGame::gameObjects)
+		{
+			gameObject& i = *iP;
+			gameObject& j = *jP;
+			if (i.collider.type != shapeType::NONE && j.collider.type != shapeType::NONE) 
+			{
+				if (iP != jP && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
+					i.physicsPosition(), i.collider,
+					j.physicsPosition(), j.collider
+					))
+				{
+					collision curColl = collision(&i, &j);
+					collisions.push_back(curColl);
+					//collision stay
+					i.collisionStay(j);
+					//j.collisionStay(i);
+
+					//send collision started if this collision is new
+					bool collisionIsNew = true;
+					for (int i = baseGame::lastTickCollisions.size() - 1; i >= 0; i--)
+					{
+						if (((baseGame::lastTickCollisions[i].object1 == curColl.object1) &&
+							(baseGame::lastTickCollisions[i].object2 == curColl.object2)
+							))
+						{
+							//remove collisions that have been re confirmed
+							baseGame::lastTickCollisions.erase(baseGame::lastTickCollisions.begin() + i);
+							collisionIsNew = false;
+						}
+					}
+					if (collisionIsNew)
+					{
+						//collision start
+						(*curColl.object1).collisionStart(*curColl.object2);
+						//(*c.object2).collisionStart(*c.object1);
+					}
+
+
+
+				}
+			}
+			
+		}
+	}
+
+
+	//oh god these loops are painfull
+	for (int i = baseGame::lastTickCollisions.size() - 1; i >= 0; i--)
+	{
+		//collision end
+		
+		(*baseGame::lastTickCollisions[i].object1).collisionEnd(*baseGame::lastTickCollisions[i].object2);
+		//(*lastTickCollisions[i].object2).collisionEnd(*lastTickCollisions[i].object1);
+		baseGame::lastTickCollisions.erase(baseGame::lastTickCollisions.begin() + i);
+	}
+	baseGame::lastTickCollisions = collisions;
+
+
+
+
 	onFixedTick();
 }
 

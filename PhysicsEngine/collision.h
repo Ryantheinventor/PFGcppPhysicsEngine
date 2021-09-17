@@ -15,8 +15,9 @@ public:
 	static bool checkAabbCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB);
 	
 
+	physObject* object1;
+	physObject* object2;
 
-
-
+	collision(physObject* o1, physObject* o2);
 
 };

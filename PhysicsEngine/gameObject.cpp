@@ -1,8 +1,9 @@
 #include "gameObject.h"
 #include "baseGame.h"
+
 gameObject::gameObject()
 {
-	
+	drawColor = BLACK;
 }
 
 void gameObject::Tick()
@@ -11,11 +12,6 @@ void gameObject::Tick()
 	{
 		destroy(this);
 	}
-}
-
-void gameObject::FixedTick()
-{
-	
 }
 
 void gameObject::OnDraw() const
@@ -27,7 +23,7 @@ void gameObject::OnDraw() const
 		DrawPixel(screenPos.x, screenPos.y, RED);
 		break;
 	case shapeType::CIRCLE:
-		DrawCircle(screenPos.x, screenPos.y, collider.circleData.radius * baseGame::screenSizeMultiplier, BLACK);
+		DrawCircle(screenPos.x, screenPos.y, collider.circleData.radius * baseGame::screenSizeMultiplier, drawColor);
 		break;
 	case shapeType::AABB:
 		DrawRectangle(
@@ -35,7 +31,7 @@ void gameObject::OnDraw() const
 			(position().x - collider.aabbData.width * 0.5f) * baseGame::screenSizeMultiplier,
 			(position().y - collider.aabbData.height * 0.5f) * baseGame::screenSizeMultiplier,
 			collider.aabbData.width * baseGame::screenSizeMultiplier, collider.aabbData.height * baseGame::screenSizeMultiplier,
-			BLACK);
+			drawColor);
 		break;
 	default:
 		DrawPixel(screenPos.x, screenPos.y, RED);
@@ -43,19 +39,36 @@ void gameObject::OnDraw() const
 	}
 }
 
+void gameObject::OnCollisionStart(physObject other)
+{
+	drawColor = RED;
+	objectsIn++;
+}
 
 //called when a collision is happening
-void gameObject::OnCollision(physObject other)
+void gameObject::OnCollisionStay(physObject other)
 {
-	std::cout << "C\n";
+	drawColor = RED;
+}
+
+void gameObject::OnCollisionEnd(physObject other)
+{
+	objectsIn--;
+	if (objectsIn == 0) 
+	{
+		drawColor = BLACK;
+	}
 }
 
 void gameObject::destroy(gameObject* toDestroy) 
 {
 	for (int i = 0; i < baseGame::gameObjects.size(); i++) 
 	{
-		if (&baseGame::gameObjects[i] == toDestroy) 
+		if (baseGame::gameObjects[i] == toDestroy) 
 		{
+			(*baseGame::gameObjects[i]).OnDestroy();
+			baseGame::destroyedGameObjects.push_back(baseGame::gameObjects[i]);
+			//delete[] baseGame::gameObjects[i];
 			baseGame::gameObjects.erase(baseGame::gameObjects.begin() + i);
 			break;
 		}
