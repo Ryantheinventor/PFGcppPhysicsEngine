@@ -31,7 +31,9 @@ void gameObject::OnDraw() const
 		break;
 	case shapeType::AABB:
 		DrawRectangle(
-			screenPos.x, screenPos.y, 
+			//screenPos.x, screenPos.y,
+			(position().x - collider.aabbData.width * 0.5f) * baseGame::screenSizeMultiplier,
+			(position().y - collider.aabbData.height * 0.5f) * baseGame::screenSizeMultiplier,
 			collider.aabbData.width * baseGame::screenSizeMultiplier, collider.aabbData.height * baseGame::screenSizeMultiplier,
 			BLACK);
 		break;

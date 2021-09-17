@@ -1,6 +1,6 @@
 #include "baseGame.h"
 
-float baseGame::screenSizeMultiplier = 10.f;
+float baseGame::screenSizeMultiplier = 30.f;
 
 baseGame::baseGame() 
 {
@@ -10,6 +10,8 @@ baseGame::baseGame()
 void baseGame::init()
 {
 	map[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::checkCircleCircle;
+	map[static_cast<collisionPair>(shapeType::AABB | shapeType::AABB)] = collision::checkAabbAabb;
+	map[static_cast<collisionPair>(shapeType::AABB | shapeType::CIRCLE)] = collision::checkAabbCircle;
 	InitWindow(800, 450, "Hello Physics");
 
 	SetTargetFPS(144);

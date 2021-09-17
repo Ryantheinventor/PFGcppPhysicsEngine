@@ -7,6 +7,12 @@ public:
 	//collision checks
 	static bool checkCircleCircle(glm::vec2 posA, circle circleA, glm::vec2 posB, circle circleB);
 	static bool checkCircleCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB);
+
+	static bool checkAabbAabb(glm::vec2 posA, aabb boxA, glm::vec2 posB, aabb boxB);
+	static bool checkAabbAabb(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB);
+
+	static bool checkAabbCircle(glm::vec2 posA, aabb boxA, glm::vec2 posB, circle circleB);
+	static bool checkAabbCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB);
 	
 
 

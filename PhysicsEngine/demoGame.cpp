@@ -4,7 +4,19 @@ void demoGame::onInit() {}
 
 void demoGame::onTick()
 {
-	if (IsMouseButtonPressed(0)) 
+	if (IsMouseButtonPressed(0))
+	{
+		glm::vec2 mousePos(GetMousePosition().x, GetMousePosition().y);
+		glm::vec2 worldMPos = screenToWorld(mousePos);
+		gameObject newObject = gameObject();
+		newObject.setPos(worldMPos);
+		newObject.collider.type = shapeType::AABB;
+		newObject.collider.aabbData.height = 1.f;
+		newObject.collider.aabbData.width = 1.f;
+		gameObjects.push_back(newObject);
+	}
+
+	if (IsMouseButtonPressed(1))
 	{
 		glm::vec2 mousePos(GetMousePosition().x, GetMousePosition().y);
 		glm::vec2 worldMPos = screenToWorld(mousePos);
