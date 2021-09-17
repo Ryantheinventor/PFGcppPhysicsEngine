@@ -1,6 +1,6 @@
 #pragma once
 #include "glm/glm.hpp"
-
+#include "shape.h"
 class physObject
 {
 private:
@@ -21,6 +21,8 @@ public:
 	bool hasGravity = true;
 	float drag = 3.f;
 
+	shape collider;
+
 	physObject();
 
 	void tickPhys(float delta);
@@ -30,5 +32,7 @@ public:
 	void addVelocity(glm::vec2 velocity);
 	void interpolate(float alpha);
 	void setPos(glm::vec2 newPos);
+	void collision(physObject other);
+	void virtual OnCollision(physObject other) {};
 };
 

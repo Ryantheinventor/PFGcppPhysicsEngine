@@ -1,5 +1,6 @@
 #include "baseGame.h"
 
+float baseGame::screenSizeMultiplier = 10.f;
 
 baseGame::baseGame() 
 {
@@ -8,6 +9,7 @@ baseGame::baseGame()
 
 void baseGame::init()
 {
+	map[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::checkCircleCircle;
 	InitWindow(800, 450, "Hello Physics");
 
 	SetTargetFPS(144);
@@ -26,6 +28,11 @@ void baseGame::tick()
 	{
 		gameObjects[i].interpolate(0.5f);
 	}
+	//tick game objects
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		gameObjects[i].Tick();
+	}
 
 	onTick();
 }
@@ -37,6 +44,27 @@ void baseGame::tickFixed()
 	{
 		gameObjects[i].tickPhys(targetFixedStep);
 	}
+
+	for (auto& i : gameObjects)
+	{
+		for (auto& j : gameObjects)
+		{
+			if (&i != &j && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
+				i.physicsPosition(), i.collider,
+				j.physicsPosition(), j.collider
+				)) 
+			{
+				i.collision(j);
+				j.collision(i);
+			}
+		}
+	}
+	//fixed tick game objects
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		gameObjects[i].FixedTick();
+	}
+	std::cout << "FixedTick\n";
 	onFixedTick();
 }
 
@@ -68,10 +96,10 @@ bool baseGame::shouldTickFixed() const
 
 glm::vec2 baseGame::worldToScreen(glm::vec2 worldPos)
 {
-	return worldPos * 10.f;
+	return worldPos * screenSizeMultiplier;
 }
 
 glm::vec2 baseGame::screenToWorld(glm::vec2 screenPos)
 {
-	return screenPos * 0.1f;
+	return screenPos * (1 / screenSizeMultiplier);
 }

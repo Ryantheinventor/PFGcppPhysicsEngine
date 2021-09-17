@@ -8,5 +8,6 @@ public:
 	void Tick();
 	void FixedTick();
 	void OnDraw() const;
+	void OnCollision(physObject other) override;
 };
 

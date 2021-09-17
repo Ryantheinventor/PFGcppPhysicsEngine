@@ -3,6 +3,15 @@
 #include <iostream>
 #include <vector>
 #include "gameObject.h"
+#include "collision.h" 
+#include <unordered_map>
+#include "enumOr.h"
+// a type alias to make things more readable
+using collisionPair = uint8_t;
+// the function signature for any collision detection test
+using collisionFunc = bool(*)(const glm::vec2&, const shape&, const glm::vec2&, const shape&);
+// a map that takes a collision pair and returns the correct function to call
+using collisionMap = std::unordered_map<collisionPair, collisionFunc>;
 class baseGame
 {
 protected:
@@ -26,6 +35,8 @@ protected:
 public:
     float targetFixedStep = 0.016f;
     float maxAccumulatedTime = 0.16f;//max of 10 physics tick per main loop
+    static float screenSizeMultiplier;
+    collisionMap map;
     // Trivial constructor
     baseGame();
 
@@ -52,5 +63,4 @@ public:
 
     static glm::vec2 worldToScreen(glm::vec2 worldPos);
     static glm::vec2 screenToWorld(glm::vec2 worldPos);
-    static void destroy(gameObject go);
 };

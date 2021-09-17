@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="baseGame.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="demoGame.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,9 +159,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="baseGame.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="demoGame.h" />
+    <ClInclude Include="enumOr.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="physObject.h" />
+    <ClInclude Include="shape.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
