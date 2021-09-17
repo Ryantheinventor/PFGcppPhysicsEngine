@@ -7,9 +7,9 @@ gameObject::gameObject()
 
 void gameObject::Tick()
 {
-	if (position().y > 100) 
+	if (position().y > 30) 
 	{
-		//should destroy here
+		destroy(this);
 	}
 }
 
@@ -43,7 +43,21 @@ void gameObject::OnDraw() const
 	}
 }
 
+
+//called when a collision is happening
 void gameObject::OnCollision(physObject other)
 {
-	std::cout << "Collision\n";
+	std::cout << "C\n";
+}
+
+void gameObject::destroy(gameObject* toDestroy) 
+{
+	for (int i = 0; i < baseGame::gameObjects.size(); i++) 
+	{
+		if (&baseGame::gameObjects[i] == toDestroy) 
+		{
+			baseGame::gameObjects.erase(baseGame::gameObjects.begin() + i);
+			break;
+		}
+	}
 }

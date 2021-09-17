@@ -1,17 +1,24 @@
 #include "baseGame.h"
 
-float baseGame::screenSizeMultiplier = 30.f;
-
+float baseGame::screenSizeMultiplier = 30.f;//the number of pixels a single unit will be represented by
+std::vector<gameObject> baseGame::gameObjects = std::vector<gameObject>();
 baseGame::baseGame() 
-{
-
-}
-
-void baseGame::init()
 {
 	map[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::checkCircleCircle;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::AABB)] = collision::checkAabbAabb;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::CIRCLE)] = collision::checkAabbCircle;
+
+	
+
+	//physics timings
+	targetFixedStep = 0.016f;
+	maxAccumulatedTime = 0.16f;
+	accumulatedFixedTime = 0.f;//should always start at zero
+}
+
+void baseGame::init()
+{
+	
 	InitWindow(800, 450, "Hello Physics");
 
 	SetTargetFPS(144);
@@ -26,14 +33,14 @@ void baseGame::tick()
 		accumulatedFixedTime = maxAccumulatedTime;
 	}
 	//aa
-	for (int i = 0; i < gameObjects.size(); i++) 
+	for (int i = 0; i < baseGame::gameObjects.size(); i++) 
 	{
-		gameObjects[i].interpolate(0.5f);
+		baseGame::gameObjects[i].interpolate(0.5f);
 	}
 	//tick game objects
-	for (int i = 0; i < gameObjects.size(); i++)
+	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		gameObjects[i].Tick();
+		baseGame::gameObjects[i].Tick();
 	}
 
 	onTick();
@@ -42,14 +49,14 @@ void baseGame::tick()
 void baseGame::tickFixed()
 {
 	accumulatedFixedTime -= targetFixedStep;
-	for (int i = 0; i < gameObjects.size(); i++) 
+	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		gameObjects[i].tickPhys(targetFixedStep);
+		baseGame::gameObjects[i].tickPhys(targetFixedStep);
 	}
 
-	for (auto& i : gameObjects)
+	for (auto& i : baseGame::gameObjects)
 	{
-		for (auto& j : gameObjects)
+		for (auto& j : baseGame::gameObjects)
 		{
 			if (&i != &j && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
 				i.physicsPosition(), i.collider,
@@ -62,11 +69,10 @@ void baseGame::tickFixed()
 		}
 	}
 	//fixed tick game objects
-	for (int i = 0; i < gameObjects.size(); i++)
+	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
-		gameObjects[i].FixedTick();
+		baseGame::gameObjects[i].FixedTick();
 	}
-	std::cout << "FixedTick\n";
 	onFixedTick();
 }
 
@@ -105,3 +111,5 @@ glm::vec2 baseGame::screenToWorld(glm::vec2 screenPos)
 {
 	return screenPos * (1 / screenSizeMultiplier);
 }
+
+

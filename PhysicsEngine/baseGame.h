@@ -16,7 +16,8 @@ class baseGame
 {
 protected:
     float accumulatedFixedTime;
-    std::vector<gameObject> gameObjects;
+    
+   
     // Called internally when game-specifc initialization occurs
     void virtual onInit() { }
 
@@ -33,8 +34,9 @@ protected:
     void virtual onExit() { }
 
 public:
-    float targetFixedStep = 0.016f;
-    float maxAccumulatedTime = 0.16f;//max of 10 physics tick per main loop
+    static std::vector<gameObject> gameObjects;
+    float targetFixedStep;
+    float maxAccumulatedTime;//max of 10 physics tick per main loop
     static float screenSizeMultiplier;
     collisionMap map;
     // Trivial constructor
@@ -63,4 +65,6 @@ public:
 
     static glm::vec2 worldToScreen(glm::vec2 worldPos);
     static glm::vec2 screenToWorld(glm::vec2 worldPos);
+
+
 };

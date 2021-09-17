@@ -34,5 +34,6 @@ public:
 	void setPos(glm::vec2 newPos);
 	void collision(physObject other);
 	void virtual OnCollision(physObject other) {};
+	
 };
 
