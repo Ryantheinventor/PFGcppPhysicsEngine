@@ -4,7 +4,32 @@ void demoGame::onInit() {}
 
 void demoGame::onTick()
 {
-	if (IsMouseButtonDown(0))
+	float newY = GetRandomValue(-50, 140) / 10.f;
+	float newX = GetRandomValue(1, 250) / 10.f;
+	if (curWait > 0.07f) 
+	{
+		glm::vec2 worldMPos = glm::vec2(newX,newY);
+		gameObject* newObject = new gameObject();
+		(*newObject).setPos(worldMPos);
+		if (GetRandomValue(1, 2) == 1) 
+		{
+			(*newObject).collider.type = shapeType::AABB;
+			(*newObject).collider.aabbData.height = 1.f;
+			(*newObject).collider.aabbData.width = 1.f;
+		}
+		else 
+		{
+			(*newObject).collider.type = shapeType::CIRCLE;
+			(*newObject).collider.circleData.radius = 0.5f;
+		}
+
+		
+
+		gameObjects.push_back(newObject);
+		curWait = 0;
+	}
+	curWait += GetFrameTime();
+	if (IsMouseButtonPressed(0))
 	{
 		glm::vec2 mousePos(GetMousePosition().x, GetMousePosition().y);
 		glm::vec2 worldMPos = screenToWorld(mousePos);
@@ -16,7 +41,7 @@ void demoGame::onTick()
 		gameObjects.push_back(newObject);
 	}
 
-	if (IsMouseButtonDown(1))
+	if (IsMouseButtonPressed(1))
 	{
 		glm::vec2 mousePos(GetMousePosition().x, GetMousePosition().y);
 		glm::vec2 worldMPos = screenToWorld(mousePos);
@@ -26,6 +51,10 @@ void demoGame::onTick()
 		(*newObject).collider.circleData.radius = 0.5f;
 		gameObjects.push_back(newObject);
 	}
+
+
+	ChangeScreenSize(GetScreenHeight() + GetMouseWheelMove()*10);
+
 }
 
 void demoGame::onFixedTick() {}

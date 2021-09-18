@@ -89,12 +89,12 @@ void baseGame::tickFixed()
 	}
 	//collision detection
 	std::vector<collision> collisions;
-	for (auto iP : baseGame::gameObjects)
+	for (int iP = 0; iP < baseGame::gameObjects.size(); iP++)
 	{
-		for (auto jP : baseGame::gameObjects)
+		for (int jP = iP; jP < baseGame::gameObjects.size(); jP++)
 		{
-			gameObject& i = *iP;
-			gameObject& j = *jP;
+			gameObject& i = *baseGame::gameObjects[iP];
+			gameObject& j = *baseGame::gameObjects[jP];
 			if (i.collider.type != shapeType::NONE && j.collider.type != shapeType::NONE) 
 			{
 				if (iP != jP && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
@@ -106,7 +106,7 @@ void baseGame::tickFixed()
 					collisions.push_back(curColl);
 					//collision stay
 					i.collisionStay(j);
-					//j.collisionStay(i);
+					j.collisionStay(i);
 
 					//send collision started if this collision is new
 					bool collisionIsNew = true;
@@ -125,7 +125,7 @@ void baseGame::tickFixed()
 					{
 						//collision start
 						(*curColl.object1).collisionStart(*curColl.object2);
-						//(*c.object2).collisionStart(*c.object1);
+						(*curColl.object2).collisionStart(*curColl.object1);
 					}
 
 
@@ -143,7 +143,7 @@ void baseGame::tickFixed()
 		//collision end
 		
 		(*baseGame::lastTickCollisions[i].object1).collisionEnd(*baseGame::lastTickCollisions[i].object2);
-		//(*lastTickCollisions[i].object2).collisionEnd(*lastTickCollisions[i].object1);
+		(*baseGame::lastTickCollisions[i].object2).collisionEnd(*baseGame::lastTickCollisions[i].object1);
 		baseGame::lastTickCollisions.erase(baseGame::lastTickCollisions.begin() + i);
 	}
 	baseGame::lastTickCollisions = collisions;
@@ -190,4 +190,9 @@ glm::vec2 baseGame::screenToWorld(glm::vec2 screenPos)
 	return screenPos * (1 / screenSizeMultiplier);
 }
 
-
+void baseGame::ChangeScreenSize(int windowHeight)
+{
+	float windowWidth = (windowHeight / 9) * 16;
+	screenSizeMultiplier = screenSizeMultiplier * (float)windowHeight / GetScreenHeight();
+	SetWindowSize(windowWidth, windowHeight);
+}

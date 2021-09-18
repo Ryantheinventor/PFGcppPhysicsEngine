@@ -34,6 +34,9 @@ protected:
     void virtual onExit() { }
 
 public:
+    float curWait = 0;
+
+
     static std::vector<collision> lastTickCollisions;
     static std::vector<gameObject*> gameObjects;
     static std::vector<gameObject*> destroyedGameObjects;
@@ -69,6 +72,6 @@ public:
 
     static glm::vec2 worldToScreen(glm::vec2 worldPos);
     static glm::vec2 screenToWorld(glm::vec2 worldPos);
-
+    static void ChangeScreenSize(int windowHeight);
 
 };
