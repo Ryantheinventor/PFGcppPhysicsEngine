@@ -156,6 +156,7 @@
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="physObject.cpp" />
+    <ClCompile Include="testObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="baseGame.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="physObject.h" />
     <ClInclude Include="shape.h" />
+    <ClInclude Include="testObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

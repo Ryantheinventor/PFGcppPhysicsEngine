@@ -7,9 +7,17 @@ std::vector<collision> baseGame::lastTickCollisions = std::vector<collision>();
 
 baseGame::baseGame() 
 {
+	//collision detection map
 	map[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::checkCircleCircle;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::AABB)] = collision::checkAabbAabb;
 	map[static_cast<collisionPair>(shapeType::AABB | shapeType::CIRCLE)] = collision::checkAabbCircle;
+
+	//depenetration map
+	dMap[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::CIRCLE)] = collision::depenetrateCircleCircle;
+	dMap[static_cast<collisionPair>(shapeType::CIRCLE | shapeType::AABB)] = collision::depenetrateAabbCircle;
+	dMap[static_cast<collisionPair>(shapeType::AABB | shapeType::AABB)] = collision::depenetrateAabbAabb;
+
+
 
 	//time between garbage collection where destroyed gameObjects get deleted
 	garbageCollectionTime = 10.f;
@@ -22,17 +30,15 @@ baseGame::baseGame()
 
 void baseGame::init()
 {
-	
 	InitWindow(800, 450, "Hello Physics");
-
 	SetTargetFPS(144);
 	onInit();
 }
 
 void baseGame::tick()
 {
-	std::cout << GetFPS() << "FPS " << baseGame::lastTickCollisions.size() << "Collisions\n";
-	std::cout << baseGame::gameObjects.size() << "Active:" << baseGame::destroyedGameObjects.size() << "Destroyed\n\n";
+	std::cout << "\n" << GetFPS() << "FPS " << baseGame::lastTickCollisions.size() << "Collisions\n";
+	std::cout << baseGame::gameObjects.size() << "Active:" << baseGame::destroyedGameObjects.size() << "Destroyed\n";
 	accumulatedFixedTime += GetFrameTime();
 	curGCTime += GetFrameTime();
 	if (accumulatedFixedTime > maxAccumulatedTime)
@@ -81,10 +87,6 @@ void baseGame::tickFixed()
 	for (int i = 0; i < baseGame::gameObjects.size(); i++)
 	{
 		(*baseGame::gameObjects[i]).tickPhys(targetFixedStep);
-	}
-	//fixed tick game objects
-	for (int i = 0; i < baseGame::gameObjects.size(); i++)
-	{
 		(*baseGame::gameObjects[i]).FixedTick();
 	}
 	//collision detection
@@ -97,7 +99,8 @@ void baseGame::tickFixed()
 			gameObject& j = *baseGame::gameObjects[jP];
 			if (i.collider.type != shapeType::NONE && j.collider.type != shapeType::NONE) 
 			{
-				if (iP != jP && map[static_cast<collisionPair>(i.collider.type | j.collider.type)](
+				collisionPair pair = static_cast<collisionPair>(i.collider.type | j.collider.type);
+				if (iP != jP && map[pair](
 					i.physicsPosition(), i.collider,
 					j.physicsPosition(), j.collider
 					))
@@ -128,7 +131,11 @@ void baseGame::tickFixed()
 						(*curColl.object2).collisionStart(*curColl.object1);
 					}
 
+					//collision resolution
+					float pen = 0.f;
+					glm::vec2 normal = dMap[pair](i.physicsPosition(), i.collider, j.physicsPosition(), j.collider, pen);
 
+					reolvePhysBodies(i, j, 1.f, normal, pen);
 
 				}
 			}
@@ -166,6 +173,10 @@ void baseGame::draw() const
 
 void baseGame::exit()
 {
+	for (int i = 0; i < baseGame::gameObjects.size(); i++) 
+	{
+		baseGame::gameObjects[i]->destroy(baseGame::gameObjects[i]);
+	}
 	onExit();
 	CloseWindow();
 }

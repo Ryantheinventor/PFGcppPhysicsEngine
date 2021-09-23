@@ -4,16 +4,11 @@
 class gameObject : public physObject
 {
 public:
-	gameObject();
-	Color drawColor;
-	int objectsIn = 0;
-	void virtual Tick() ;
+	gameObject() {};
+	void virtual Tick() {};
 	void virtual FixedTick() {};
 	void virtual OnDestroy() {};
-	void OnDraw() const;
-	void OnCollisionStart(physObject other) override;
-	void OnCollisionStay(physObject other) override;
-	void OnCollisionEnd(physObject other) override;
+	void OnDraw() const {};
 	void destroy(gameObject* toDestroy);
 };
 

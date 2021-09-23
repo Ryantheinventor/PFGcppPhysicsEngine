@@ -20,6 +20,7 @@ public:
 	float mass = 1.f;
 	bool hasGravity = true;
 	float drag = 3.f;
+	bool isStatic = false;
 
 	shape collider;
 
@@ -40,3 +41,8 @@ public:
 	void virtual OnCollisionEnd(physObject other) {};
 };
 
+float resolveCollision(glm::vec2 posA, glm::vec2 velA, float massA,
+	glm::vec2 posB, glm::vec2 velB, float massB,
+	float elasticity, glm::vec2 normal);
+
+void reolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const glm::vec2& normal, float pen);

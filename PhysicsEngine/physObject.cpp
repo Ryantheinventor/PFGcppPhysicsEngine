@@ -31,9 +31,15 @@ void physObject::tickPhys(float delta)
 	//integrate acceleration
 	vel_ += aAccel * delta;
 	aAccel = glm::vec2(0.f,0.f);
-
-	//integrate velocity into position
-	physPos += vel_ * delta;
+	if (isStatic) 
+	{
+		vel_ = glm::vec2(0.f, 0.f);
+	}
+	else 
+	{
+		//integrate velocity into position
+		physPos += vel_ * delta;
+	}
 }
 
 void physObject::addForce(glm::vec2 force)
@@ -85,3 +91,42 @@ void physObject::collisionEnd(physObject other)
 	OnCollisionEnd(other);
 }
 
+float resolveCollision(glm::vec2 posA, glm::vec2 velA, float massA, glm::vec2 posB, glm::vec2 velB, float massB, float elasticity, glm::vec2 normal)
+{
+	glm::vec2 relativeVec = velA - velB;
+	float impulseMag = glm::dot(-(1.f + elasticity) * relativeVec, normal) /
+					   glm::dot(normal, normal * (1 / massA + 1 / massB));
+
+	return impulseMag;
+}
+
+void reolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const glm::vec2& normal, float pen) 
+{
+	
+	float impulseMag = resolveCollision(lhs.physicsPosition(), lhs.vel(), lhs.mass,
+										rhs.physicsPosition(), rhs.vel(), rhs.mass,
+										elasticity, normal);
+	glm::vec2 impulse = impulseMag * normal;
+	
+
+
+	if (lhs.isStatic || rhs.isStatic) 
+	{
+		pen *= .51f;
+	}
+	glm::vec2 correction = normal * pen;
+
+	if (!lhs.isStatic)
+	{
+		lhs.setPos(lhs.physicsPosition() + correction);
+		lhs.addImpulse(impulse);
+	}
+	if (!rhs.isStatic)
+	{
+		rhs.setPos(rhs.physicsPosition() - correction);
+		rhs.addImpulse(-impulse);
+	}
+	
+
+
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include "baseGame.h"
+#include "testObject.h"
 class demoGame : public baseGame
 {
 public:
@@ -9,7 +10,7 @@ public:
 	void onDraw() const override;
     void onExit() override;
 
-
+    float curWait = 0;
     //// Called internally when game-specifc initialization occurs
     //void virtual onInit() { }
 

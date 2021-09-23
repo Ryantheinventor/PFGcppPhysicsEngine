@@ -20,4 +20,12 @@ public:
 
 	collision(physObject* o1, physObject* o2);
 
+	//collision resolution
+	//depen
+	static glm::vec2 depenetrateCircleCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB, float& pen);
+	static glm::vec2 depenetrateAabbAabb(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB, float& pen);
+	static glm::vec2 depenetrateAabbCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB, float& pen);
+
+
+
 };

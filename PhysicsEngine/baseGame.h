@@ -12,6 +12,11 @@ using collisionPair = uint8_t;
 using collisionFunc = bool(*)(const glm::vec2&, const shape&, const glm::vec2&, const shape&);
 // a map that takes a collision pair and returns the correct function to call
 using collisionMap = std::unordered_map<collisionPair, collisionFunc>;
+
+using depenFunc = glm::vec2(*)(const glm::vec2&, const shape&, const glm::vec2&, const shape&, float&);
+
+using depenMap = std::unordered_map<collisionPair, depenFunc>;
+
 class baseGame
 {
 protected:
@@ -34,9 +39,6 @@ protected:
     void virtual onExit() { }
 
 public:
-    float curWait = 0;
-
-
     static std::vector<collision> lastTickCollisions;
     static std::vector<gameObject*> gameObjects;
     static std::vector<gameObject*> destroyedGameObjects;
@@ -46,6 +48,7 @@ public:
     float maxAccumulatedTime;//max of 10 physics tick per main loop
     static float screenSizeMultiplier;
     collisionMap map;
+    depenMap dMap;
     // Trivial constructor
     baseGame();
 
@@ -71,7 +74,7 @@ public:
     bool shouldTickFixed() const;
 
     static glm::vec2 worldToScreen(glm::vec2 worldPos);
-    static glm::vec2 screenToWorld(glm::vec2 worldPos);
+    static glm::vec2 screenToWorld(glm::vec2 screenPos);
     static void ChangeScreenSize(int windowHeight);
 
 };
