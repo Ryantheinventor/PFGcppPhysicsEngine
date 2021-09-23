@@ -8,7 +8,7 @@ public:
 	void virtual Tick() {};
 	void virtual FixedTick() {};
 	void virtual OnDestroy() {};
-	void OnDraw() const {};
+	void virtual OnDraw() const {};
 	void destroy(gameObject* toDestroy);
 };
 

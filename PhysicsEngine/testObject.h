@@ -4,10 +4,10 @@ class testObject : public gameObject
 {
 public:
 	testObject();
-	void virtual Tick();
-	void virtual FixedTick() {};
-	void virtual OnDestroy() {};
-	void OnDraw() const;
+	void Tick() override;
+	void FixedTick() override {};
+	void OnDestroy() override {};
+	void OnDraw() const override;
 	void OnCollisionStart(physObject other) override;
 	void OnCollisionStay(physObject other) override;
 	void OnCollisionEnd(physObject other) override; 

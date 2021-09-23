@@ -2,7 +2,7 @@
 
 testObject::testObject() 
 {
-
+	drawColor = BLACK;
 }
 
 

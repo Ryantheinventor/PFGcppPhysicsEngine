@@ -57,7 +57,7 @@ void demoGame::onTick()
 	{
 		glm::vec2 mousePos(GetMousePosition().x, GetMousePosition().y);
 		glm::vec2 worldMPos = screenToWorld(mousePos);
-		gameObject* newObject = new gameObject();
+		testObject* newObject = new testObject();
 		newObject->setPos(worldMPos);
 		newObject->collider.type = shapeType::AABB;
 		newObject->collider.aabbData.height = 1.f;
