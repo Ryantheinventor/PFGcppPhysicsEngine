@@ -109,7 +109,7 @@ void resolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const
 	glm::vec2 impulse = impulseMag * normal;
 	
 
-	
+	//only half the pen value if both objects can move
 	if (!(lhs.isStatic || rhs.isStatic)) 
 	{
 		pen *= .51f;
