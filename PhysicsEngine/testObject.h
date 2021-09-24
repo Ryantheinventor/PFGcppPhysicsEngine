@@ -14,5 +14,11 @@ public:
 
 	int objectsIn = 0;
 	Color drawColor;
+
+
+	Color normalColor = BLACK;
+	Color collColor = RED;
+
+
 };
 

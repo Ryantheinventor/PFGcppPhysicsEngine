@@ -100,7 +100,7 @@ float resolveCollision(glm::vec2 posA, glm::vec2 velA, float massA, glm::vec2 po
 	return impulseMag;
 }
 
-void reolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const glm::vec2& normal, float pen) 
+void resolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const glm::vec2& normal, float pen) 
 {
 	
 	float impulseMag = resolveCollision(lhs.physicsPosition(), lhs.vel(), lhs.mass,
@@ -109,8 +109,8 @@ void reolvePhysBodies(physObject& lhs, physObject& rhs, float elasticity, const 
 	glm::vec2 impulse = impulseMag * normal;
 	
 
-
-	if (lhs.isStatic || rhs.isStatic) 
+	
+	if (!(lhs.isStatic || rhs.isStatic)) 
 	{
 		pen *= .51f;
 	}

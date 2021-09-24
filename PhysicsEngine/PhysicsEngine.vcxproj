@@ -156,6 +156,7 @@
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="physObject.cpp" />
+    <ClCompile Include="shape.cpp" />
     <ClCompile Include="testObject.cpp" />
   </ItemGroup>
   <ItemGroup>

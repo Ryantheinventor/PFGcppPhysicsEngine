@@ -2,7 +2,7 @@
 
 testObject::testObject() 
 {
-	drawColor = BLACK;
+	
 }
 
 
@@ -41,14 +41,22 @@ void testObject::OnDraw() const
 
 void testObject::OnCollisionStart(physObject other)
 {
-	drawColor = RED;
-	objectsIn++;
+	if (collider.type != shapeType::CIRCLE) 
+	{
+		drawColor = collColor;
+		objectsIn++;
+	}
+
+	
 }
 
 //called when a collision is happening
 void testObject::OnCollisionStay(physObject other)
 {
-	drawColor = RED;
+	if (collider.type != shapeType::CIRCLE)
+	{
+		drawColor = collColor;
+	}
 }
 
 void testObject::OnCollisionEnd(physObject other)
@@ -56,6 +64,6 @@ void testObject::OnCollisionEnd(physObject other)
 	objectsIn--;
 	if (objectsIn == 0)
 	{
-		drawColor = BLACK;
+		drawColor = normalColor;
 	}
 }

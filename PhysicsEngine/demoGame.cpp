@@ -11,7 +11,7 @@ void demoGame::onTick()
 		glm::vec2 worldMPos = glm::vec2(newX,newY);
 		testObject* newObject = new testObject();
 		(*newObject).setPos(worldMPos);
-		if (GetRandomValue(1, 2) == 1) 
+		if (GetRandomValue(2, 2) == 1) 
 		{
 			(*newObject).collider.type = shapeType::AABB;
 			(*newObject).collider.aabbData.height = 1.f;
@@ -22,6 +22,11 @@ void demoGame::onTick()
 			(*newObject).collider.type = shapeType::CIRCLE;
 			(*newObject).collider.circleData.radius = 0.5f;
 		}
+		newObject->normalColor = SKYBLUE;
+		newObject->collColor = DARKBLUE;
+		newObject->drawColor = newObject->normalColor;
+
+		//newObject->hasGravity = false;
 
 		/*(*newObject).collider.type = shapeType::CIRCLE;
 		(*newObject).collider.circleData.radius = 0.5f;*/
@@ -39,6 +44,10 @@ void demoGame::onTick()
 		newObject->collider.type = shapeType::AABB;
 		newObject->collider.aabbData.height = 1.f;
 		newObject->collider.aabbData.width = 1.f;
+		newObject->normalColor = LIME;
+		newObject->collColor = DARKGREEN;
+		newObject->drawColor = newObject->normalColor;
+		//newObject->hasGravity = false;
 		gameObjects.push_back(newObject);
 	}
 
@@ -50,6 +59,10 @@ void demoGame::onTick()
 		newObject->setPos(worldMPos);
 		newObject->collider.type = shapeType::CIRCLE;
 		newObject->collider.circleData.radius = 0.5f;
+		newObject->normalColor = VIOLET;
+		newObject->collColor = PURPLE;
+		newObject->drawColor = newObject->normalColor;
+		//newObject->hasGravity = false;
 		gameObjects.push_back(newObject);
 	}
 
@@ -60,9 +73,12 @@ void demoGame::onTick()
 		testObject* newObject = new testObject();
 		newObject->setPos(worldMPos);
 		newObject->collider.type = shapeType::AABB;
-		newObject->collider.aabbData.height = 1.f;
-		newObject->collider.aabbData.width = 1.f;
+		newObject->collider.aabbData.height = 2.f;
+		newObject->collider.aabbData.width = 2.f;
 		newObject->isStatic = true;
+		newObject->normalColor = LIGHTGRAY;
+		newObject->collColor = DARKGRAY;
+		newObject->drawColor = newObject->normalColor;
 		gameObjects.push_back(newObject);
 	}
 

@@ -14,11 +14,20 @@ bool collision::checkCircleCircle(const glm::vec2& posA, const shape& shapeA, co
 
 bool collision::checkAabbAabb(glm::vec2 posA, aabb boxA, glm::vec2 posB, aabb boxB)
 {
-	return posA.x < posB.x + boxB.width &&
-		posA.x + boxA.width > posB.x &&
-		posA.y < posB.y + boxB.height &&
-		posA.y + boxA.height > posB.y;
-		
+	float aXmn;
+	float aXmx;
+	float aYmn;
+	float aYmx;
+
+	float bXmn;
+	float bXmx;
+	float bYmn;
+	float bYmx;
+
+	boxA.getMinMax(posA, aXmn, aXmx, aYmn, aYmx);
+	boxB.getMinMax(posB, bXmn, bXmx, bYmn, bYmx);
+
+	return aXmn <= bXmx && aXmx >= bXmn && aYmn <= bYmx && aYmx >= bYmn;	
 }
 
 bool collision::checkAabbAabb(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB)
@@ -68,15 +77,67 @@ glm::vec2 collision::depenetrateCircleCircle(const glm::vec2& posA, const shape&
 
 glm::vec2 collision::depenetrateAabbCircle(const glm::vec2& posA, const shape& shapeA, const glm::vec2& posB, const shape& shapeB, float& pen)
 {
-	glm::vec2 normal(0, 0);
+	glm::vec2 normal(1, 1);
+	glm::vec2 clampedCPos();
+	float xDiff = posA.x - posB.x;
+	float yDiff = posA.y - posB.y;
+
+	float sumX = 0;
+	float sumY = 0;
 	if (shapeA.type == shapeType::CIRCLE) 
 	{
+		sumX = shapeB.aabbData.width / 2 + shapeA.circleData.radius;
+		sumY = shapeB.aabbData.height / 2 + shapeA.circleData.radius;
+	}
+	else 
+	{
+		sumX = shapeA.aabbData.width / 2 + shapeB.circleData.radius;
+		sumY = shapeA.aabbData.height / 2 + shapeB.circleData.radius;
+	}
+
+
+	if (glm::abs(xDiff) > glm::abs(yDiff))
+	{
+		//moveOnX
+		normal = glm::vec2(1, 0);
+		if (xDiff < 0) 
+		{
+			normal *= -1;
+		}
+		pen = sumX - glm::abs(xDiff);
+	}
+	else 
+	{
+		//moveOnY
+		//moveOnX
+		normal = glm::vec2(0, 1);
+		if (yDiff < 0)
+		{
+			normal *= -1;
+		}
+		pen = sumY - glm::abs(yDiff);
+	}
+
+
+
+
+	/*if (shapeA.type == shapeType::CIRCLE) 
+	{
+		
 		glm::vec2 clampedCPos = glm::clamp(posA,
 			glm::vec2(posB.x - shapeB.aabbData.width * 0.5f, posB.y - shapeB.aabbData.height * 0.5f),
 			glm::vec2(posB.x + shapeB.aabbData.width * 0.5f, posB.y + shapeB.aabbData.height * 0.5f)
 		);
-		normal = posA - posB;
-		pen = shapeA.circleData.radius - glm::distance(posA, clampedCPos);
+		
+		if (posB == clampedCPos)
+		{
+			
+		}
+		else 
+		{
+			normal = clampedCPos - posB;
+			pen = shapeA.circleData.radius - glm::distance(posA, clampedCPos);
+		}
 	}
 	else
 	{
@@ -84,9 +145,19 @@ glm::vec2 collision::depenetrateAabbCircle(const glm::vec2& posA, const shape& s
 			glm::vec2(posA.x - shapeA.aabbData.width * 0.5f, posA.y - shapeA.aabbData.height * 0.5f),
 			glm::vec2(posA.x + shapeA.aabbData.width * 0.5f, posA.y + shapeA.aabbData.height * 0.5f)
 		);
-		normal = posA - posB;
-		pen = shapeB.circleData.radius - glm::distance(posB, clampedCPos);
-	}
+		
+		if (posB == clampedCPos)
+		{
+			
+		}
+		else 
+		{
+			normal = posA - clampedCPos;
+			pen = shapeB.circleData.radius - glm::distance(posB, clampedCPos);
+		}
+
+	}*/
+	
 	return normal;
 }
 

@@ -93,7 +93,7 @@ void baseGame::tickFixed()
 	std::vector<collision> collisions;
 	for (int iP = 0; iP < baseGame::gameObjects.size(); iP++)
 	{
-		for (int jP = iP; jP < baseGame::gameObjects.size(); jP++)
+		for (int jP = iP + 1; jP < baseGame::gameObjects.size(); jP++)
 		{
 			gameObject& i = *baseGame::gameObjects[iP];
 			gameObject& j = *baseGame::gameObjects[jP];
@@ -135,7 +135,7 @@ void baseGame::tickFixed()
 					float pen = 0.f;
 					glm::vec2 normal = dMap[pair](i.physicsPosition(), i.collider, j.physicsPosition(), j.collider, pen);
 
-					reolvePhysBodies(i, j, 1.f, normal, pen);
+					resolvePhysBodies(i, j, 1.f, normal, pen);
 
 				}
 			}
