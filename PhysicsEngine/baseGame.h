@@ -44,7 +44,7 @@ public:
     static std::vector<gameObject*> destroyedGameObjects;
     float garbageCollectionTime;
     
-    float targetFixedStep;
+    static float targetFixedStep;
     float maxAccumulatedTime;//max of 10 physics tick per main loop
     static float screenSizeMultiplier;
     collisionMap map;

@@ -1,5 +1,5 @@
 #include "physObject.h"
-
+#include "baseGame.h"
 physObject::physObject() 
 {
 
@@ -20,13 +20,6 @@ void physObject::tickPhys(float delta)
 	{
 		vel_ = glm::vec2(0.f, 0.f);
 	}
-	//integrate forces into velocity
-	//normal force
-	vel_ += aForce * delta;
-	aForce = glm::vec2(0.f, 0.f);
-	//impulse force
-	vel_ += aIForce;
-	aIForce = glm::vec2(0.f, 0.f);
 
 	//integrate acceleration
 	vel_ += aAccel * delta;
@@ -44,17 +37,17 @@ void physObject::tickPhys(float delta)
 
 void physObject::addForce(glm::vec2 force)
 {
-	aForce += force / mass;
+	vel_ += force / mass * baseGame::targetFixedStep;
 }
 
 void physObject::addImpulse(glm::vec2 force)
 {
-	aIForce += force / mass;
+	vel_ += force / mass;
 }
 
 void physObject::addAccel(glm::vec2 accel)
 {
-	aAccel += accel;
+	vel_ += accel * baseGame::targetFixedStep;
 }
 
 void physObject::addVelocity(glm::vec2 velocity)

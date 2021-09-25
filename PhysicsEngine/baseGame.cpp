@@ -1,6 +1,7 @@
 #include "baseGame.h"
 
 float baseGame::screenSizeMultiplier = 30.f;//the number of pixels a single unit will be represented by
+float baseGame::targetFixedStep = 0.016f;//fixed time step
 std::vector<gameObject*> baseGame::gameObjects = std::vector<gameObject*>();
 std::vector<gameObject*> baseGame::destroyedGameObjects = std::vector<gameObject*>();
 std::vector<collision> baseGame::lastTickCollisions = std::vector<collision>();
@@ -23,7 +24,6 @@ baseGame::baseGame()
 	garbageCollectionTime = 10.f;
 
 	//physics timings
-	targetFixedStep = 0.016f;
 	maxAccumulatedTime = 0.16f;
 	accumulatedFixedTime = 0.f;//should always start at zero
 }
